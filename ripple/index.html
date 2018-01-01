@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>playground - Ripple</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.js"></script>
+	<script src="./libs/ripple-0.17.9-min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous">
+	</script>
+	<script type="text/javascript">
+	    var api = new ripple.RippleAPI({server:'wss://s1.ripple.com/'});
+	</script>
+</head>
+<body>
+
+  <div>
+  	<input type="text" id="get_balance_address" placeholder="ripple address" size="50">
+  	<button id="get_balance_button">get balance</button>
+  </div>
+  <div><span id="ripple_balance"></span> XRP</div>
+
+  <script type="text/javascript">
+  	    $("#get_balance_button").click(function(e) {
+		$("#ripple_balance").text("loading...");
+	    api.connect().then(function() {
+	    	var address = $("#get_balance_address").val();
+	        return api.getAccountInfo(address);
+	    }).then(function(account_info) {
+	    	console.log(account_info);
+	    	$("#ripple_balance").text(account_info.xrpBalance);
+	    });
+    });
+  </script>
+
+</body>
+</html>
