@@ -23,16 +23,41 @@
   <div><span id="ripple_balance"></span> XRP</div>
 
   <script type="text/javascript">
-  	    $("#get_balance_button").click(function(e) {
+
+  	function getRequestValue(key) {
+  		var regexp = new RegExp(key + '=(.*?)(&|$)');
+		var match = location.search.match(regexp);
+		if(match) {
+    		return decodeURIComponent(match[1]);
+		} else {
+			return null;
+		}
+  	}
+
+  	function getXrpBalance(address) {
 		$("#ripple_balance").text("loading...");
-	    api.connect().then(function() {
-	    	var address = $("#get_balance_address").val();
+		api.connect().then(function() {
 	        return api.getAccountInfo(address);
 	    }).then(function(account_info) {
 	    	console.log(account_info);
 	    	$("#ripple_balance").text(account_info.xrpBalance);
 	    });
-    });
+  	}
+
+  	function setup() {
+	  	$("#get_balance_button").click(function(e) {
+	  		var address = $("#get_balance_address").val();
+	  		getXrpBalance(address);
+    	});  		
+  	}
+
+  	$(document).ready(function(){
+  		setup();
+  		var address = getRequestValue("address")
+  		if(address) {
+  			getXrpBalance(address);
+  		}
+	});
   </script>
 
 </body>
