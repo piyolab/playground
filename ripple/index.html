@@ -20,7 +20,7 @@
   	<input type="text" id="get_balance_address" placeholder="ripple address" size="50">
   	<button id="get_balance_button">get balance</button>
   </div>
-  <div><span id="ripple_balance"></span> XRP</div>
+  <div>balance: <span id="ripple_balance"></span> XRP</div>
 
   <script type="text/javascript">
 
@@ -56,6 +56,7 @@
   		var address = getRequestValue("address")
   		if(address) {
   			getXrpBalance(address);
+  			$("#get_balance_address").val(address);
   		}
 	});
   </script>
