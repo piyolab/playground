@@ -11,7 +11,7 @@ contract Playground20TokenGenerator {
 	Playground20Token public token;
 
 	// Ether とトークンのベース交換レート
-	uint256 public constant baseRate = 100;
+	uint256 internal constant baseRate = 100;
 
 	// トークン発行数のキャップ
 	uint256 public constant cap = 21000000 * 10*18; 
@@ -26,22 +26,27 @@ contract Playground20TokenGenerator {
 		token = new Playground20Token();
 	}
 
+	// フォールバック関数
+	// このコントラクトに Ether が送付されたときに呼ばれる
 	function () external payable {
 		buyTokens(msg.sender);
 	}
 
+	// トークンを購入するメソッド
 	function buyTokens(address beneficiary) public payable {
 		require(beneficiary != address(0));
 		require(msg.value != 0);
 	    uint256 weiAmount = msg.value;
         uint256 tokenAmount = weiAmount.mul(getRate());
         // todo capを確認する
+        // todo オーバーフローを考慮にいれる
         token.mint(beneficiary, tokenAmount);
         TokenPurchase(msg.sender, beneficiary, weiAmount, tokenAmount);
         wallet.transfer(msg.value);
 	}
 
-	function getRate() internal pure returns (uint256) {
+	// 現在のレートを取得するメソッド
+	function getRate() public pure returns (uint256) {
 		return baseRate.mul(10);
 	}
 
