@@ -10,11 +10,11 @@ contract Playground20TokenGenerator {
 	// 発行するトークン
 	Playground20Token public token;
 
-	// Ether とトークンのベース交換レート
-	uint256 internal constant baseRate = 100;
+	// Ether とトークンの交換レート
+	uint256 internal constant rate = 1000;
 
-	// トークン発行数のキャップ
-	uint256 public constant cap = 21000000 * 10*18; 
+	// トークン発行数のキャップ: 2100万
+	uint256 public constant cap = 21000000 * (10**18); 
 
 	// トークン発行時に送付された Ether を受け取る wallet
 	address internal constant wallet = 0xac82f34a1a287B2206982A9220e7b68846C645dF;
@@ -37,17 +37,26 @@ contract Playground20TokenGenerator {
 		require(beneficiary != address(0));
 		require(msg.value != 0);
 	    uint256 weiAmount = msg.value;
-        uint256 tokenAmount = weiAmount.mul(getRate());
-        // todo capを確認する
-        // todo オーバーフローを考慮にいれる
-        token.mint(beneficiary, tokenAmount);
-        TokenPurchase(msg.sender, beneficiary, weiAmount, tokenAmount);
-        wallet.transfer(msg.value);
+	    // 発行するトークンの量を計算
+        uint256 tokenAmount = weiAmount.mul(rate) + getBonus();
+        // 現在のトークン供給量 + 今回発行するトークン量がcapを上回らないかチェック
+        if (tokenAmount.add(token.totalSupply()) > cap) {
+        	revert();
+        } else {
+	        token.mint(beneficiary, tokenAmount);
+	        TokenPurchase(msg.sender, beneficiary, weiAmount, tokenAmount);
+	        wallet.transfer(msg.value);        	
+        } 
 	}
 
-	// 現在のレートを取得するメソッド
-	function getRate() public pure returns (uint256) {
-		return baseRate.mul(10);
+	// 現在のボーナスを取得するメソッド
+	function getBonus() public view returns (uint256) {
+		// 1577804400 = 2020/01/01 00:00:
+		uint256 bonusLastTime = 1577804400;
+		if (block.timestamp >= bonusLastTime) {
+			return 0;
+		}
+		return bonusLastTime.sub(block.timestamp) * (10**15);
 	}
 
 }
