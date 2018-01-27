@@ -11,7 +11,7 @@ contract Playground20TokenGenerator {
 	Playground20Token public token;
 
 	// Ether とトークンの交換レート
-	uint256 internal constant rate = 1000;
+	uint256 public constant rate = 1000;
 
 	// トークン発行数のキャップ: 2100万
 	uint256 public constant cap = 21000000 * (10**18); 
