@@ -38,7 +38,7 @@ contract Playground20TokenGenerator {
 		require(msg.value != 0);
 	    uint256 weiAmount = msg.value;
 	    // 発行するトークンの量を計算
-        uint256 tokenAmount = weiAmount.mul(rate) + getBonus();
+        uint256 tokenAmount = weiAmount.mul(rate) + getBonus(weiAmount);
         // 現在のトークン供給量 + 今回発行するトークン量がcapを上回らないかチェック
         if (tokenAmount.add(token.totalSupply()) > cap) {
         	revert();
@@ -50,13 +50,13 @@ contract Playground20TokenGenerator {
 	}
 
 	// 現在のボーナスを取得するメソッド
-	function getBonus() public view returns (uint256) {
+	function getBonus(uint256 weiAmount) public view returns (uint256) {
 		// 1577804400 = 2020/01/01 00:00:
 		uint256 bonusLastTime = 1577804400;
 		if (block.timestamp >= bonusLastTime) {
 			return 0;
 		}
-		return bonusLastTime.sub(block.timestamp) * (10**15);
+		return bonusLastTime.sub(block.timestamp).div(1000) * weiAmount;
 	}
 
 }
