@@ -1,5 +1,7 @@
-var Playground20TokenGenerator = artifacts.require("Playground20TokenGenerator");
-var Playground20Token = artifacts.require("Playground20Token");
+const Playground20TokenGenerator = artifacts.require("Playground20TokenGenerator");
+const Playground20Token = artifacts.require("Playground20Token");
+
+const wallet = "0xac82f34a1a287B2206982A9220e7b68846C645dF";
 
 function toEthValue(weiValue) {
 	return web3.fromWei(weiValue, 'ether').toNumber();
@@ -107,8 +109,8 @@ contract('Playground20TokenGenerator', function(accounts) {
 			// console.log("actual: " + actual);
 			assert.equal(actual, expect);
 
-			const totalSupply = await token.totalSupply();
-			console.log(toEthValue(totalSupply));
+			// const totalSupply = await token.totalSupply();
+			// console.log(toEthValue(totalSupply));
  		});
 
  		it('3 ETH ぶんの購入', async function () {
@@ -125,8 +127,8 @@ contract('Playground20TokenGenerator', function(accounts) {
 			// console.log("actual: " + actual);
 			assert.equal(actual, expect);
 
-			const totalSupply = await token.totalSupply();
-			console.log(toEthValue(totalSupply));
+			// const totalSupply = await token.totalSupply();
+			// console.log(toEthValue(totalSupply));
  		});
 
  		it('0.2 ETH ぶんの購入', async function () {
@@ -143,8 +145,8 @@ contract('Playground20TokenGenerator', function(accounts) {
 			// console.log("actual: " + actual);
 			assert.equal(actual, expect);
 
-			const totalSupply = await token.totalSupply();
-			console.log(toEthValue(totalSupply));
+			// const totalSupply = await token.totalSupply();
+			// console.log(toEthValue(totalSupply));
  		});
 
  		// it('over cap 時の動作テスト', async function () {
@@ -173,8 +175,33 @@ contract('Playground20TokenGenerator', function(accounts) {
 			// console.log(toEthValue(totalSupply));
  		// });
 		
+	});
+
+	describe('トークン購入時の wallet balance', async() => {
+
+		it('1 ETH ぶんの購入', async function () {
+			const ethAmount = 1;
+			const expect = ethAmount;
+			const currentBalance = await web3.eth.getBalance(wallet);
+			await generator.buyTokens(buyer, { from : buyer, value : toWeiValue(ethAmount) });
+			const balance = await web3.eth.getBalance(wallet);
+			const actual = toEthValue(balance) - toEthValue(currentBalance);
+			assert.equal(actual, expect);
+ 		});
+
+ 		it('3 ETH ぶんの購入', async function () {
+			const ethAmount = 3;
+			const expect = ethAmount;
+			const currentBalance = await web3.eth.getBalance(wallet);
+			await generator.buyTokens(buyer, { from : buyer, value : toWeiValue(ethAmount) });
+			const balance = await web3.eth.getBalance(wallet);
+			const actual = toEthValue(balance) - toEthValue(currentBalance);
+			assert.equal(actual, expect);
+ 		});
+
 
 	});
+
 
 
 });
