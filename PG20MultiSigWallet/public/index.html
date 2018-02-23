@@ -24,6 +24,32 @@
 	<h3>ETH balance</h3>
 	<div><input type="text" size="50" id="eth_balance"></div>
 
+	<h3>Create token transaction data</h3>
+	<div>token address:<input type="text" size="50" id="create_data_token_address"></div>
+	<div>function:<input type="text" size="50" id="create_data_function"></div>
+	<div>params:<input type="text" size="50" id="create_data_params"></div>
+	<div>Result:</div>
+	<div><textarea rows="5" cols="20" id="create_data"></textarea></div>
+
+	<h3>Submit Transaction</h3>
+	<div>Transaction Data:<input type="text" size="50" id="submit_tx_data"></div>
+	<div><button id="submit_tx">submit</button></div>
+	<div>Transaction Result:</div>
+	<div><textarea rows="5" cols="20" id="submit_tx_result"></textarea></div>
+
+	<h3>Submit ETH Transaction</h3>
+	<div>to Address:<input type="text" size="50" id="submit_eth_tx_address"></div>
+	<div>ETH value:<input type="text" size="50" id="submit_eth_tx_value"></div>
+	<div><button id="submit_eth_tx">submit</button></div>
+	<div>Transaction Result:</div>
+	<div><textarea rows="5" cols="20" id="submit_eth_tx_result"></textarea></div>
+
+	<h3>Confirm Transaction</h3>
+	<div>Transaction ID:<input type="text" size="50" id="confirm_tx_id"></div>
+	<div><button id="confirm_tx">confirm</button></div>
+	<div>Transaction Result:</div>
+	<div><textarea rows="5" cols="20" id="confirm_tx_result"></textarea></div>
+
 	<script src="./js/multisig.js"></script>
 </body>
 </html>
