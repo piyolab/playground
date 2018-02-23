@@ -9,9 +9,12 @@ const DEFAULT_GAS_PRICE = 21000000000;
 
 const wallet = {};
 
+
+// TODO 1.x 移行に伴い削除
 function toEtherValue(value) {
 	return value / 10000;
 }
+
 
 // URL パラメータを取得	
 function getUrlParams() {
@@ -45,6 +48,9 @@ function initWallet() {
 	// wallet.contract = window.web3.eth.contract(wallet.abi).at(wallet.address);
 	wallet.contract = new window.web3.eth.Contract(wallet.abi, wallet.address);
 
+	// TODO
+	// default account の設定もっといい方法ないかな？
+	// これだと、途中で metamask のアカウント変更に対応できない気が
 	window.web3.eth.getAccounts()
 	.then(function(data) {
 		console.log(data);
@@ -72,7 +78,7 @@ function displayWalletInfo() {
 }
 
 
-
+// トランザクション数を取得
 function registerTransactionCount() {
 	$('#get_tx_count').click(function(e) {
 		wallet.contract.methods.transactionCount().call(function(error, result){
@@ -83,7 +89,7 @@ function registerTransactionCount() {
 }
 
 
-
+// Confirmation 数を取得
 function registerConfirmationCount() {
 	$('#get_confirm_count').click(function(e) {
 		const txId = $('#get_confirm_count_txid').val();
@@ -95,7 +101,7 @@ function registerConfirmationCount() {
 }
 
 
-
+// トランザクション内容を取得	
 function registerGetTransaction() {
 	$('#get_tx').click(function(e) {
 		const txId = $('#get_tx_txid').val();
@@ -114,17 +120,32 @@ function registerGetTransaction() {
 }
 
 
+// Create optional data のボタンを押下したときに実行されます。
+function registerCreateOptData() {
 
-function submitTransaction(toAddress, ethValue, data, callback) {
+    // $('#create_opt_data').click(function(e) {
+    // 	const functionStr = $('#create_opt_data_function').val();
+    // 	const params = $('#create_opt_data_params').val();
+    // });
+}
+
+
+function createTxObj() {
 	const txObj = {};
 	txObj.from = window.web3.defaultAccount;
 	txObj.gas = DEFAULT_GAS_LIMIT;
 	txObj.gasPrice = DEFAULT_GAS_PRICE;
+	return txObj;
+}
+
+// トランザクションをsubmitします
+// function submitTransaction(toAddress, ethValue, data, callback) {
+function submitTransaction(toAddress, ethValue, data) {
+	const txObj = createTxObj();
 	const weiValue = window.web3.utils.toWei(ethValue, 'ether');
 	if(!data) data = '0x00';
-	wallet.contract.methods.submitTransaction(toAddress, weiValue, data).send(txObj, function(error, result){
- 		callback(error, result);
-    });
+	// Promise を返す
+ 	return wallet.contract.methods.submitTransaction(toAddress, weiValue, data).send(txObj);
 }
 
 
@@ -135,64 +156,70 @@ function registerSubmitTransaction() {
     	const address = $('#submit_tx_address').val();
     	const value = $('#submit_tx_value').val();
     	const data = $('#submit_tx_data').val();
-    	submitTransaction(address, value, data, function(error, result) {
-    		$('#submit_tx_hash').val(result);
-    	});
+    	submitTransaction(address, value, data)
+		.on('transactionHash', function(hash){
+	    	console.log('hash: ' + hash);
+	    	$('#submit_tx_hash').val(hash);
+		})
+		.on('receipt', function(receipt){
+		    console.log('receipt: ', receipt);
+		    const transactionId = receipt.events.Submission.returnValues.transactionId;
+		    const gasUsed = receipt.gasUsed;
+		    const cumulativeGasUsed = receipt.cumulativeGasUsed;
+			$('#submit_tx_result').val('transactionId: ' + transactionId + '\n'
+								+ 'gasUsed: ' + gasUsed + '\n'
+								+ 'cumulativeGasUsed: ' + cumulativeGasUsed + '\n');
+		})
+		// .on('confirmation', function(confirmationNumber, receipt){
+		// 	// events > Submission > returnValues > transactionId をみるべきっぽい
+		//     console.log('confirmationNumber: ' + confirmationNumber);
+		//     console.log('receipt: ', receipt);
+		// })
+		.on('error', console.error);
+       	// submitTransaction(address, value, data, function(error, result) {
+    	// 	$('#submit_tx_hash').val(result);
+    	// });
     });
 }
 
 
-
-function confirmTransaction(txId, callback) {
-	const txObj = {};
-	txObj.gas = DEFAULT_GAS_LIMIT;
-	txObj.gasPrice = DEFAULT_GAS_PRICE;
-	wallet.contract.confirmTransaction(txId, txObj, function(error, result){
- 		callback(error, result);
-    });
+// トランザクションを confirm します。	
+function confirmTransaction(txId) {
+	const txObj = createTxObj();
+	return wallet.contract.methods.confirmTransaction(txId).send(txObj);
 }
 
 
-
+// Confirm Transaction のボタンを押下したときに実行されます。
 function registerConfirmTransaction() {
 	$('#confirm_tx').click(function(e) {
 		const txId = $('#confirm_tx_txid').val();
-    	confirmTransaction(txId, function(error, result) {
-    		$('#confirm_tx_hash').val(result);
+    	confirmTransaction(txId)
+		.on('transactionHash', function(hash){
+	    	$('#confirm_tx_hash').val(hash);   	
     	});
     });
 }
 
 
-
-function executeTransaction(txId, callback) {
-	const txObj = {};
-	txObj.gas = DEFAULT_GAS_LIMIT;
-	txObj.gasPrice = DEFAULT_GAS_PRICE;
-	wallet.contract.executeTransaction(txId, txObj, function(error, result){
- 		callback(error, result);
-    });
+// トランザクションを execute します。	
+function executeTransaction(txId) {
+	const txObj = createTxObj();
+	return wallet.contract.methods.executeTransaction(txId).send(txObj);
 }
 
 
-
+// Execute Transaction のボタンを押下したときに実行されます。
 function registerExecuteTransaction() {
 	$('#execute_tx').click(function(e) {
 		const txId = $('#execute_tx_txid').val();
-    	executeTransaction(txId, function(error, result) {
-    		$('#execute_tx_hash').val(result);
+		executeTransaction(txId)
+		.on('transactionHash', function(hash){
+	    	$('#execute_tx_hash').val(hash);   	
     	});
     });
 }
 
-
-function registerCreateOptData() {
-
-    // $('#create_opt_data').click(function(e) {
-    // 	const functionStr = $('#create_opt_data_function').val();
-    // 	const params = $('#create_opt_data_params').val();
-    // });
-}
 
 
 $(document).ready(function(){

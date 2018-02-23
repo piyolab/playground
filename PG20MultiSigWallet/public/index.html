@@ -43,7 +43,16 @@
 	<h3>Get Transcation</h3>
 	<div>Transaction ID:<input type="text" size="50" id="get_tx_txid"></div>
 	<div><button id="get_tx">get transaction</button></div>
-	<div><textarea rows="5" cols="80" id="get_tx_result"></textarea></div>
+	<div>Result:</div>
+	<div><textarea rows="5" cols="80" id="get_tx_result" readonly></textarea></div>
+
+
+	<h3>Create optional data</h3>
+	<div>function:<input type="text" size="50" id="create_opt_data_function"></div>
+	<div>params:<input type="text" size="50" id="create_opt_data_params"></div>
+	<div><button id="create_opt_data">create</button></div>
+	<div>Result:</div>
+	<div><textarea rows="5" cols="20" id="create_opt_data_result" readonly></textarea></div>
 
 
 	<h3>Submit Transaction</h3>
@@ -51,27 +60,21 @@
 	<div>ETH value:<input type="number" size="10" id="submit_tx_value"></div>
 	<div>Transaction Data:<input type="text" size="50" id="submit_tx_data"></div>
 	<div><button id="submit_tx">submit</button></div>
-	<div>Transaction hash:<input type="text" size="50" id="submit_tx_hash"></div>
+	<div>Transaction hash:<input type="text" size="50" id="submit_tx_hash" readonly></div>
+	<div>Result:</div>
+	<div><textarea rows="5" cols="80" id="submit_tx_result" readonly></textarea></div>
 
 
 	<h3>Confirm Transaction</h3>
 	<div>Transaction ID:<input type="text" size="50" id="confirm_tx_txid"></div>
 	<div><button id="confirm_tx">confirm</button></div>
-	<div>Transaction hash:<input type="text" size="50" id="confirm_tx_hash"></div>
+	<div>Transaction hash:<input type="text" size="50" id="confirm_tx_hash" readonly></div>
 
 
 	<h3>Execute Transaction</h3>
 	<div>Transaction ID:<input type="text" size="50" id="execute_tx_txid"></div>
-	<div><button id="execute_tx">confirm</button></div>
-	<div>Transaction hash:<input type="text" size="50" id="execute_tx_hash"></div>
-
-
-	<h3>Create optional data</h3>
-	<div>function:<input type="text" size="50" id="create_opt_data_function"></div>
-	<div>params:<input type="text" size="50" id="create_opt_data_params"></div>
-	<div><button id="create_opt_data">submit</button></div>
-	<div>Result:</div>
-	<div><textarea rows="5" cols="20" id="create_opt_data_result"></textarea></div>
+	<div><button id="execute_tx">execute</button></div>
+	<div>Transaction hash:<input type="text" size="50" id="execute_tx_hash" readonly></div>
 
 	<script src="./js/multisig.js"></script>
 </body>
