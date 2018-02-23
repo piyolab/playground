@@ -72,7 +72,7 @@ function displayWalletInfo() {
 	// MultiSigWallet の ETH バランスを取得
 	window.web3.eth.getBalance(wallet.address)
 	.then(function(data){
-		console.log(data);
+		// console.log(data);
 		$('#eth_balance').text(window.web3.utils.fromWei(data, 'ether'));
 	});
 }
@@ -123,10 +123,31 @@ function registerGetTransaction() {
 // Create optional data のボタンを押下したときに実行されます。
 function registerCreateOptData() {
 
-    // $('#create_opt_data').click(function(e) {
-    // 	const functionStr = $('#create_opt_data_function').val();
-    // 	const params = $('#create_opt_data_params').val();
-    // });
+    $('#create_opt_data').click(function(e) {
+    	var BN = web3.utils.BN;
+    	const address = $('#create_opt_data_address').val();
+    	const value = $('#create_opt_data_value').val();
+    	const decimal = new BN($('#create_opt_data_decimal').val());  
+    	const jsonInterface = {
+    		name: 'transfer',
+    		type: 'function',
+		    inputs: [{
+	        	type: 'address',
+	        	name: '_to'
+	    	},{
+    			type: 'uint256',
+	        	name: '_value'
+	    	}]
+		};
+    	var pow = new BN(10).pow(decimal);
+    	var tokenAmount = new BN(value).mul(pow);
+	  	const parameters = [address, tokenAmount];
+    	const encodedFunctionCall = web3.eth.abi.encodeFunctionCall(jsonInterface, parameters);
+    	console.log(encodedFunctionCall);
+    	$('#create_opt_data_result').val(encodedFunctionCall);
+    	$('#submit_tx_data').val(encodedFunctionCall);
+    });
+
 }
 
 
@@ -245,7 +266,18 @@ $(document).ready(function(){
 	registerConfirmTransaction();
 	registerExecuteTransaction();
 
-	console.log(web3.version);	
+	console.log(web3.version);
+	test();
 });
 
 
+function test() {
+		var BN = web3.utils.BN;
+    	var decimal = new BN('18');
+    	console.log(new BN(10).pow(decimal).toString());
+
+    	var tokenAmount = new BN(3).mul(new BN(10).pow(decimal)).toString();;
+    	console.log(tokenAmount);
+		console.log(window.web3.utils.fromWei(tokenAmount, 'ether'));
+
+}
