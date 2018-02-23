@@ -1,5 +1,5 @@
 const INFURA_API_KEY = '';
-const HTTP_PROVIDER_URL = 'http://ropsten.infura.io/';
+const HTTP_PROVIDER_URL = 'wss://ropsten.infura.io/ws';
 
 const DEFAULT_MULTI_SIG_WALLET_ADDRESS = '0x1370f0273a409a01b36989b8c5ff8c3e42989e14';
 const DEFAULT_MULTI_SIG_WALLET_ABI = [{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"owners","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"address"}],"name":"removeOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"revokeConfirmation","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"},{"name":"","type":"address"}],"name":"confirmations","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"pending","type":"bool"},{"name":"executed","type":"bool"}],"name":"getTransactionCount","outputs":[{"name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"address"}],"name":"addOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"isConfirmed","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"getConfirmationCount","outputs":[{"name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"transactions","outputs":[{"name":"destination","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"executed","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getOwners","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"from","type":"uint256"},{"name":"to","type":"uint256"},{"name":"pending","type":"bool"},{"name":"executed","type":"bool"}],"name":"getTransactionIds","outputs":[{"name":"_transactionIds","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"getConfirmations","outputs":[{"name":"_confirmations","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"transactionCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_required","type":"uint256"}],"name":"changeRequirement","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"confirmTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"destination","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"}],"name":"submitTransaction","outputs":[{"name":"transactionId","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"MAX_OWNER_COUNT","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"required","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"address"},{"name":"newOwner","type":"address"}],"name":"replaceOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"transactionId","type":"uint256"}],"name":"executeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_owners","type":"address[]"},{"name":"_required","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":true,"name":"transactionId","type":"uint256"}],"name":"Confirmation","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":true,"name":"transactionId","type":"uint256"}],"name":"Revocation","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"transactionId","type":"uint256"}],"name":"Submission","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"transactionId","type":"uint256"}],"name":"Execution","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"transactionId","type":"uint256"}],"name":"ExecutionFailure","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"OwnerAddition","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"OwnerRemoval","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"required","type":"uint256"}],"name":"RequirementChange","type":"event"}];
@@ -42,7 +42,14 @@ function initWallet() {
 		wallet.abi = DEFAULT_MULTI_SIG_WALLET_ABI;
 	}
 
-	wallet.contract = window.web3.eth.contract(wallet.abi).at(wallet.address);
+	// wallet.contract = window.web3.eth.contract(wallet.abi).at(wallet.address);
+	wallet.contract = new window.web3.eth.Contract(wallet.abi, wallet.address);
+
+	window.web3.eth.getAccounts()
+	.then(function(data) {
+		console.log(data);
+		window.web3.defaultAccount = data[0];
+	})
 }
 
 
@@ -52,24 +59,25 @@ function displayWalletInfo() {
 	$('#abi').val(JSON.stringify(wallet.abi));
 
 	// MultiSigWallet の Owner アドレスを取得
-	(function(method) { wallet.contract[method](function(error, result){
+	wallet.contract.methods.getOwners().call(function(error, result){
 	    $('#owners').val(result);
-	});})('getOwners');
+	});
 
 	// MultiSigWallet の ETH バランスを取得
-	(function(method) { window.web3.eth[method](wallet.address, function(error, result){
-		// console.log(result);
-	    $('#eth_balance').text(toEtherValue(result.c[0]));
-	});})('getBalance');
+	window.web3.eth.getBalance(wallet.address)
+	.then(function(data){
+		console.log(data);
+		$('#eth_balance').text(window.web3.utils.fromWei(data, 'ether'));
+	});
 }
 
 
 
 function registerTransactionCount() {
 	$('#get_tx_count').click(function(e) {
-		wallet.contract.transactionCount.call(function(error, result){
+		wallet.contract.methods.transactionCount().call(function(error, result){
 			console.log(result);
-			$('#get_tx_count_result').text('tx count: ' + result.c[0]);
+			$('#get_tx_count_result').text('tx count: ' + result);
 		});
 	});
 }
@@ -79,9 +87,9 @@ function registerTransactionCount() {
 function registerConfirmationCount() {
 	$('#get_confirm_count').click(function(e) {
 		const txId = $('#get_confirm_count_txid').val();
-		wallet.contract.getConfirmationCount.call(txId, function(error, result){
+		wallet.contract.methods.getConfirmationCount(txId).call(function(error, result){
 			console.log(result);
-			$('#get_confirm_count_result').text('confirmation count: ' + result.c[0]);
+			$('#get_confirm_count_result').text('confirmation count: ' + result);
 		});
 	});
 }
@@ -91,10 +99,10 @@ function registerConfirmationCount() {
 function registerGetTransaction() {
 	$('#get_tx').click(function(e) {
 		const txId = $('#get_tx_txid').val();
-		wallet.contract.transactions.call(txId, function(error, result){
-			// console.log(result);
+		wallet.contract.methods.transactions(txId).call(function(error, result){
+			console.log(result);
 			const destination = result[0];
-			const value = toEtherValue(result[1]['c'][0]);
+			const value = window.web3.utils.fromWei(result[1], 'ether');
 			const data = result[2];
 			const executed = result[3];
 			$('#get_tx_result').val('destination: ' + destination + '\n'
@@ -109,11 +117,12 @@ function registerGetTransaction() {
 
 function submitTransaction(toAddress, ethValue, data, callback) {
 	const txObj = {};
-	txObj.gasLimit = DEFAULT_GAS_LIMIT;
+	txObj.from = window.web3.defaultAccount;
+	txObj.gas = DEFAULT_GAS_LIMIT;
 	txObj.gasPrice = DEFAULT_GAS_PRICE;
-	const weiValue = window.web3.toWei(ethValue, 'ether');
+	const weiValue = window.web3.utils.toWei(ethValue, 'ether');
 	if(!data) data = '0x00';
-	wallet.contract.submitTransaction(toAddress, weiValue, data, txObj, function(error, result){
+	wallet.contract.methods.submitTransaction(toAddress, weiValue, data).send(txObj, function(error, result){
  		callback(error, result);
     });
 }
@@ -136,7 +145,7 @@ function registerSubmitTransaction() {
 
 function confirmTransaction(txId, callback) {
 	const txObj = {};
-	txObj.gasLimit = DEFAULT_GAS_LIMIT;
+	txObj.gas = DEFAULT_GAS_LIMIT;
 	txObj.gasPrice = DEFAULT_GAS_PRICE;
 	wallet.contract.confirmTransaction(txId, txObj, function(error, result){
  		callback(error, result);
@@ -158,7 +167,7 @@ function registerConfirmTransaction() {
 
 function executeTransaction(txId, callback) {
 	const txObj = {};
-	txObj.gasLimit = DEFAULT_GAS_LIMIT;
+	txObj.gas = DEFAULT_GAS_LIMIT;
 	txObj.gasPrice = DEFAULT_GAS_PRICE;
 	wallet.contract.executeTransaction(txId, txObj, function(error, result){
  		callback(error, result);
@@ -193,7 +202,8 @@ $(document).ready(function(){
     	console.log('Using MetaMask!')
 	    window.web3 = new Web3(web3.currentProvider);
 	} else {
-		window.web3 = new Web3(new Web3.providers.HttpProvider(HTTP_PROVIDER_URL + INFURA_API_KEY));
+		// window.web3 = new Web3(new Web3.providers.HttpProvider(HTTP_PROVIDER_URL + INFURA_API_KEY));
+		window.web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(HTTP_PROVIDER_URL + INFURA_API_KEY));
 	}
 
 	initWallet();
@@ -209,6 +219,9 @@ $(document).ready(function(){
 
 	registerCreateOptData();
 
+	var test = window.web3.abi;
+	console.log(web3.version);
+	console.log(window.web3.defaultAccount);
 });
 
 
