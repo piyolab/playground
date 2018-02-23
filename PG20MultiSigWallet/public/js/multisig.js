@@ -6,6 +6,9 @@ const DEFAULT_MULTI_SIG_WALLET_ABI = [{"constant":true,"inputs":[{"name":"","typ
 
 const wallet = {};
 
+function toEtherValue(value) {
+	return value / 10000;
+}
 
 // URL パラメータを取得	
 function getUrlParams() {
@@ -48,6 +51,12 @@ function displayWalletInfo() {
 	(function(method) { wallet.contract[method](function(error, result){
 	    $('#owners').val(result);
 	});})('getOwners');
+
+	// MultiSigWallet の ETH バランスを取得
+	(function(method) { window.web3.eth[method](wallet.address, function(error, result){
+		// console.log(result);
+	    $('#eth_balance').val(toEtherValue(result.c[0]));
+	});})('getBalance');
 
 
 }
