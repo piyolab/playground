@@ -45,7 +45,6 @@ function initWallet() {
 		wallet.abi = DEFAULT_MULTI_SIG_WALLET_ABI;
 	}
 
-	// wallet.contract = window.web3.eth.contract(wallet.abi).at(wallet.address);
 	wallet.contract = new window.web3.eth.Contract(wallet.abi, wallet.address);
 
 	// TODO
@@ -55,6 +54,7 @@ function initWallet() {
 	.then(function(data) {
 		console.log(data);
 		window.web3.defaultAccount = data[0];
+		console.log(window.web3.defaultAccount);
 	})
 }
 
@@ -240,15 +240,12 @@ $(document).ready(function(){
 	registerConfirmationCount();
 	registerGetTransaction();
 
+	registerCreateOptData();
 	registerSubmitTransaction();
 	registerConfirmTransaction();
 	registerExecuteTransaction();
 
-	registerCreateOptData();
-
-	var test = window.web3.abi;
-	console.log(web3.version);
-	console.log(window.web3.defaultAccount);
+	console.log(web3.version);	
 });
 
 
