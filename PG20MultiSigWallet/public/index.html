@@ -4,11 +4,22 @@
 	<meta charset="UTF-8">
 
 	<script src="./js/web3.min.js"></script>
+	<script src ="./js/bignumber.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 	<h1>MultiSigWallet Manager</h1>
-	<input type="text" size="50" id="address">
+
+	<h2>Wallet Data</h2>
+
+	<h3>address:</h3>
+	<div><input type="text" size="50" id="address"></div>
+
+	<h3>abi</h3>
+	<div><textarea rows="5" cols="20" id="abi"></textarea></div>
+
+	<h3>owners</h3>
+	<div><textarea rows="5" cols="20" id="owners"></textarea></div>
 
 	<script src="./js/multisig.js"></script>
 </body>
