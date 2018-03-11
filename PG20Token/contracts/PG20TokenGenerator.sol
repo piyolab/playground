@@ -1,14 +1,14 @@
 pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-import './Playground20Token.sol';
+import './PG20Token.sol';
 
-contract Playground20TokenGenerator {
+contract PG20TokenGenerator {
 	
 	using SafeMath for uint256;
 
 	// 発行するトークン
-	Playground20Token public token;
+	PG20Token public token;
 
 	// Ether とトークンの交換レート
 	uint256 public constant rate = 1000;
@@ -22,8 +22,8 @@ contract Playground20TokenGenerator {
  	event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
 	// コンストラクタ
-	function Playground20TokenGenerator() public {
-		token = new Playground20Token();
+	function PG20TokenGenerator() public {
+		token = new PG20Token();
 	}
 
 	// フォールバック関数
