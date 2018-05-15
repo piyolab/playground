@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v1.0.0-beta.34/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>utfString2Data</h1>
+
+  <p>String</p>
+  <textarea id="string" cols="80" rows="5" oninput="onStringChange(this)"></textarea>
+
+  <p>Data</p>
+  <textarea id="data" cols="80" rows="5" oninput="onDataChange(this)"></textarea>
+
+  <script>
+    console.log(Web3.version);
+
+    function onStringChange(e) {
+      let data = Web3.utils.utf8ToHex(e.value);
+      document.getElementById('data').value = data;
+    }
+
+    function onDataChange(e) {
+      let string = Web3.utils.hexToUtf8(e.value);
+      document.getElementById('string').value = string;
+    }
+
+  </script>
+
+</body>
+</html>
