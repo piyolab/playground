@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+  <textarea id="address" cols="80" rows="5"></textarea>
+
+  <script>
+    web3 = new Web3(web3.currentProvider);
+    document.getElementById("address").value = web3.eth.defaultAccount;
+  </script>
+
+</body>
+</html>
