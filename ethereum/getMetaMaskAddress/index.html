@@ -13,8 +13,8 @@
     web3 = new Web3(web3.currentProvider);
     var account = '';
     var accountInterval = setInterval(function() {
-      if (web3.eth.defaultAccount !== account) {
-        account = web3.eth.defaultAccount;
+      if (web3.eth.accounts[0] !== account) {
+        account = web3.eth.accounts[0];
         document.getElementById("address").value = account;
         location.reload();
       }
