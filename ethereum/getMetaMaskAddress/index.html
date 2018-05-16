@@ -9,8 +9,11 @@
   <textarea id="address" cols="80" rows="5"></textarea>
 
   <script>
+  window.onload = function() {
     web3 = new Web3(web3.currentProvider);
     document.getElementById("address").value = web3.eth.defaultAccount;
+  };
+    
   </script>
 
 </body>
