@@ -16,6 +16,7 @@
       console.log(result.toString(10));
       var gasPriceInGwei = web3.fromWei(result, 'gwei');
       document.getElementById('gas-price').innerText = gasPriceInGwei;
+      console.log(gasPriceInGwei.toString(10));
     });
   };
   </script>
