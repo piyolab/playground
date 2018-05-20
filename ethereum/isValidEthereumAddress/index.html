@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v1.0.0-beta.34/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>Check Valid Ethereum Address</h1>
+
+  <p>Address</p>
+  <input type="text" id="address" size="80" oninput="onAddressChange(this)"></input>
+
+  <p>Result</p>
+  <span id="result"></span>
+
+  <script>
+    console.log(Web3.version);
+
+    function isValidEthereumAddress(address) {
+      return Web3.utils.isAddress(address);
+    }
+
+    function onAddressChange(e) {
+      var resultMessage;
+      if(isValidEthereumAddress(e.value)){
+        resultMessage = "Valid Ethereum Address 🙆‍";
+      } else {
+        resultMessage = "Invalid Ethereum Address 🙅‍";
+      }
+      document.getElementById('result').innerText = resultMessage;
+    }
+
+  </script>
+
+</body>
+</html>
