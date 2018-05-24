@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+  <textarea id="address" cols="80" rows="5"></textarea>
+
+  <script>
+  window.onload = function() {
+    web3 = new Web3(web3.currentProvider);
+    var account = '';
+    var accountInterval = setInterval(function() {
+      if (web3.eth.accounts[0] !== account) {
+        account = web3.eth.accounts[0];
+        document.getElementById("address").value = account;
+      }
+    }, 300);
+  };
+  </script>
+
+</body>
+</html>

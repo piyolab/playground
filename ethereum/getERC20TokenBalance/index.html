@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>Get ERC20 Token Balance</h1>
+
+  <h2>Token Address</h2>
+  <input type="text" id="token-address" size="80" oninput="onAddressChange()"></input>
+  <p>e.g. 0x2A65D41dbC6E8925bD9253abfAdaFab98eA53E34</p>
+
+  <h2>Wallet Address</h2>
+  <input type="text" id="wallet-address" size="80" oninput="onAddressChange()"></input>
+  <p>e.g. 0x821e28109872cad442da8d8335be37d317d4f1e7</p>
+
+  <h2>Result</h2>
+  <span id="result"></span>
+
+  <script>
+
+    function getERC20TokenBalance(tokenAddress, walletAddress, callback) {
+      let minABI = [
+        {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
+        {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"}
+      ];
+      let contract = web3.eth.contract(minABI).at(tokenAddress);
+      contract.balanceOf(walletAddress, (error, balance) => {
+        contract.decimals((error, decimals) => {
+          balance = balance.div(10**decimals);
+          console.log(balance.toString());
+          callback(balance);
+        });
+      });
+    }
+
+    function onAddressChange(e) {
+      let tokenAddress = document.getElementById('token-address').value;
+      let walletAddress = document.getElementById('wallet-address').value;
+      if(tokenAddress != "" && walletAddress != "") {
+        getERC20TokenBalance(tokenAddress, walletAddress, (balance) => {
+          document.getElementById('result').innerText = balance.toString();
+        });        
+      }
+    }
+
+    window.onload = function() {
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io"));
+      }
+      console.log(web3.version);
+    }
+
+  </script>
+
+</body>
+</html>

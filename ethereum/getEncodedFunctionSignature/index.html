@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v1.0.0-beta.34/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>Get Encoded Ethereum Function Signature</h1>
+
+  <p>Function Prototype String</p>
+  <input type="text" id="address" size="80" oninput="onAddressChange(this)"></input>
+  <p>e.g. sendMessage(string,address)</p>
+
+  <p>Result</p>
+  <span id="result"></span>
+
+  <script>
+    function onAddressChange(e) {
+      let encodedFunctionSignature = web3.eth.abi.encodeFunctionSignature(e.value);
+      console.log(encodedFunctionSignature);
+      document.getElementById('result').innerText = encodedFunctionSignature;
+    }
+
+    window.onload = function() {
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io"));
+      }
+      console.log(web3.version);
+    }
+
+  </script>
+
+</body>
+</html>
