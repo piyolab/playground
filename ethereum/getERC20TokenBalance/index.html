@@ -22,13 +22,34 @@
   <script>
 
     function getERC20TokenBalance(tokenAddress, walletAddress, callback) {
+
+      // ERC20 トークンの残高を取得するための最小限のABI
       let minABI = [
-        {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
-        {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"}
+        // balanceOf
+        {
+          "constant":true,
+          "inputs":[{"name":"_owner","type":"address"}],
+          "name":"balanceOf",
+          "outputs":[{"name":"balance","type":"uint256"}],
+          "type":"function"
+        },
+        // decimals
+        {
+          "constant":true,
+          "inputs":[],
+          "name":"decimals",
+          "outputs":[{"name":"","type":"uint8"}],
+          "type":"function"
+        }
       ];
+
+      //  ABI とコントラクト（ERC20トークン）のアドレスから、コントラクトのインスタンスを取得 
       let contract = web3.eth.contract(minABI).at(tokenAddress);
+      // 引数にウォレットのアドレスを渡して、balanceOf 関数を呼ぶ
       contract.balanceOf(walletAddress, (error, balance) => {
+        // ERC20トークンの decimals を取得
         contract.decimals((error, decimals) => {
+          // 残高を計算
           balance = balance.div(10**decimals);
           console.log(balance.toString());
           callback(balance);
