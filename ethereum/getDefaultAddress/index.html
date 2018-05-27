@@ -14,10 +14,10 @@
   <span id="result"></span>
 
   <script>
-
+    var web3;
     window.onload = function() {
       console.log(Web3.version);
-      var web3 = new Web3(Web3.currentProvider || 'wss://mainnet.infura.io/ws');
+      web3 = new Web3(Web3.currentProvider || 'wss://mainnet.infura.io/ws');
     }
 
     function check() {
