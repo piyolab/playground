@@ -16,6 +16,7 @@
     window.onload = function() {
       console.log(Web3.version);
       var web3 = new Web3(Web3.givenProvider || 'wss://mainnet.infura.io/ws');
+      console.log(web3.eth.defaultAccount);
       document.getElementById('result').innerText = web3.eth.defaultAccount;
     }
 
