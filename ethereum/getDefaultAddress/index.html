@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v1.0.0-beta.34/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>Get Default Address</h1>
+
+  <p>Result</p>
+  <span id="result"></span>
+
+  <script>
+
+    window.onload = function() {
+      console.log(Web3.version);
+      var web3 = new Web3(Web3.givenProvider || 'wss://mainnet.infura.io/ws');
+      document.getElementById('result').innerText = web3.eth.defaultAccount;
+    }
+
+  </script>
+
+</body>
+</html>
