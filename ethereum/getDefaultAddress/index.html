@@ -7,6 +7,8 @@
 <body>
 
   <h1>Get Default Address</h1>
+  <div><button id="check" onclick="check()">Check</button></div>
+
 
   <p>Result</p>
   <span id="result"></span>
@@ -16,6 +18,9 @@
     window.onload = function() {
       console.log(Web3.version);
       var web3 = new Web3(Web3.givenProvider || 'wss://mainnet.infura.io/ws');
+    }
+
+    function check() {
       console.log(web3.eth.defaultAccount);
       document.getElementById('result').innerText = web3.eth.defaultAccount;
     }
