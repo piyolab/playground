@@ -19,9 +19,11 @@
     window.addEventListener('load', function() {
 
       // Web3 が Ethereum 対応ブラウザ（Mist や MetaMask）によってインジェクトされているかどうかをチェックします。
-      if (typeof web3 !== 'undefined') {
+      // if (typeof web3 !== 'undefined') {
+      if (typeof ethereumProvider !== 'undefined') {
         // Mist または MetaMask のプロバイダを使用して Web3 を初期化します。
-        web3js = new Web3(web3.currentProvider);
+        // web3js = new Web3(web3.currentProvider);
+        web3.js = new Web3(ethereumProvider);
       } else {
         // Mist や MetaMask 等の Ethereum 対応ブラウザを使用していない場合の初期化です。
         // 必要に応じて、ローカルノードやホスティングしているノード等を使用します。
