@@ -14,10 +14,21 @@
   <span id="result"></span>
 
   <script>
-    var web3;
-    window.onload = function() {
-      console.log(Web3.version);
-      web3 = new Web3(ethereumProvider || 'wss://mainnet.infura.io/ws');
+    var web3js;
+
+    window.addEventListener('load', function() {
+
+      // Web3 が Ethereum 対応ブラウザ（Mist や MetaMask）によってインジェクトされているかどうかをチェックします。
+      if (typeof web3 !== 'undefined') {
+        // Mist または MetaMask のプロバイダを使用して Web3 を初期化します。
+        web3js = new Web3(web3.currentProvider);
+      } else {
+        // Mist や MetaMask 等の Ethereum 対応ブラウザを使用していない場合の初期化です。
+        // 必要に応じて、ローカルノードやホスティングしているノード等を使用します。
+        // 以下の例では infura.io をプロバイダとして使用し、Web3 を初期化しています。
+        web3js = new Web3('wss://mainnet.infura.io/ws');
+      }
+      console.log(web3js.version);
     }
 
     function check() {
