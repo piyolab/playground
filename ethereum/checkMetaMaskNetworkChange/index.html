@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+  <script>
+    var web3js; // ローカルの Web3 オブジェクトを格納するための変数です。
+    window.onload = function() {
+      if (typeof web3 !== 'undefined') {
+        // Mist または MetaMask のプロバイダを使用して Web3 を初期化します。
+        web3js = new Web3(web3.currentProvider);
+        console.log(web3js.version.api);  // => 0.20.3
+
+        // ポーリングして使用しているネットワークをチェックします。
+        setInterval(function () {
+          web3js.version.getNetwork(checkNetwork)
+        }, 1000);
+
+        function checkNetwork (err, currentNetwork) {
+          if (window.lastNetwork != currentNetwork) {
+            alert("Ethereum Network has been changed: " + currentNetwork);
+            window.lastNetwork = currentNetwork;
+          }
+        }
+      } 
+    };
+  </script>
+
+</body>
+</html>
