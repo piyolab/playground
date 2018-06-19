@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+  <h1>Check Transaction Count</h1>
+
+  <p>Address</p>
+  <input type="text" id="address" size="80" oninput="onAddressChange(this)"></input>
+
+  <p>Result</p>
+  <span id="result"></span>
+
+  <script>
+    window.onload = function() {
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io"));
+      }
+      console.log(web3.version.api);
+    }
+
+    function getTransactionCount(address, callback) {
+      web3.eth.getTransactionCount(address, (error, count) => {
+        console.log(count);
+        callback(count);
+      });
+    }
+
+    function onAddressChange(e) {
+      getTransactionCount(e.value, (count) => {
+        document.getElementById('result').innerText = count;
+      });
+    }
+
+  </script>
+
+</body>
+</html>
