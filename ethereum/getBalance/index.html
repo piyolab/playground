@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../web3/v0.20.6/web3.min.js"></script>
+</head>
+<body>
+
+<h1>Get ETH Token Balance</h1>
+
+  <h2>Wallet Address</h2>
+  <input type="text" id="wallet-address" size="80" oninput="onAddressChange()"></input>
+  <p>e.g. 0x821e28109872cad442da8d8335be37d317d4f1e7</p>
+
+  <h2>Result</h2>
+  <span id="result"></span>
+
+  <script>
+
+    function onAddressChange(e) {
+      let walletAddress = document.getElementById('wallet-address').value;
+      if(walletAddress != "") {
+        web3.eth.getBalance(walletAddress, (error, balance) => {
+          console.log(balance);
+          document.getElementById('result').innerText = web3.fromWei(balance, 'ether');
+        });
+      }
+    }
+
+    window.onload = function() {
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io"));
+      }
+      console.log(web3.version);
+    }
+
+  </script>
+
+</body>
+</html>
